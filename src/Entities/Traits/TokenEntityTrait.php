@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace League\OAuth2\Server\Entities\Traits;
 
 use DateTimeImmutable;
+use League\OAuth2\Server\Entities\ClaimEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 
@@ -26,6 +27,11 @@ trait TokenEntityTrait
     protected array $scopes = [];
 
     protected DateTimeImmutable $expiryDateTime;
+
+    /**
+     * @var ClaimEntityInterface[]
+     */
+    protected array $claims = [];
 
     /**
      * @var non-empty-string|null
@@ -50,6 +56,24 @@ trait TokenEntityTrait
     public function getScopes(): array
     {
         return array_values($this->scopes);
+    }
+
+    /**
+     * Associate a claim with the token.
+     */
+    public function addClaim(ClaimEntityInterface $claim): void
+    {
+        $this->claims[] = $claim;
+    }
+
+    /**
+     * Return an array of claims associated with the token.
+     *
+     * @return ClaimEntityInterface[]
+     */
+    public function getClaims(): array
+    {
+        return $this->claims;
     }
 
     /**

@@ -136,9 +136,13 @@ class AuthCodeGrant extends AbstractAuthorizeGrant
         if (isset($authCodePayload->code_challenge)) {
             $this->validateCodeChallenge($authCodePayload, $codeVerifier);
         }
+        $privateClaims = [];
+        if ($this->claimRepository){
+            $privateClaims = $this->claimRepository->getClaims();
+        }
 
         // Issue and persist new access token
-        $accessToken = $this->issueAccessToken($accessTokenTTL, $client, $authCodePayload->user_id, $scopes);
+        $accessToken = $this->issueAccessToken($accessTokenTTL, $client, $authCodePayload->user_id, $scopes, $privateClaims);
         $this->getEmitter()->emit(new RequestAccessTokenEvent(RequestEvent::ACCESS_TOKEN_ISSUED, $request, $accessToken));
         $responseType->setAccessToken($accessToken);
 

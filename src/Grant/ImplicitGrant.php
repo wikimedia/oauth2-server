@@ -165,11 +165,17 @@ class ImplicitGrant extends AbstractAuthorizeGrant
                 $authorizationRequest->getUser()->getIdentifier()
             );
 
+            $privateClaims = [];
+            if($this->claimRepository){
+                $privateClaims = $this->claimRepository->getClaims();
+            }
+
             $accessToken = $this->issueAccessToken(
                 $this->accessTokenTTL,
                 $authorizationRequest->getClient(),
                 $authorizationRequest->getUser()->getIdentifier(),
-                $finalizedScopes
+                $finalizedScopes,
+                $privateClaims
             );
 
             // TODO: next major release: this method needs `ServerRequestInterface` as an argument
