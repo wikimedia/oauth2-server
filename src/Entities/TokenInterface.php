@@ -75,11 +75,4 @@ interface TokenInterface
      * @return ScopeEntityInterface[]
      */
     public function getScopes(): array;
-
-    /**
-     * Return an array of claims associated with the token.
-     *
-     * @return ClaimEntityInterface[]
-     */
-    public function getClaims(): array;
 }

@@ -1,29 +1,26 @@
 <?php
+
 /**
  * @author      Sebastian Kroczek <me@xbug.de>
- * @copyright   Copyright (c) Sebastian Kroczek
+ * @copyright   Copyright (c) Alex Bilbie
  * @license     http://mit-license.org/
  *
  * @link        https://github.com/thephpleague/oauth2-server
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Server\Entities;
 
-use JsonSerializable;
-
-interface ClaimEntityInterface extends JsonSerializable
+interface ClaimEntityInterface
 {
     /**
      * Get the claim's name.
-     *
-     * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Get the claim's value
-     *
-     * @return mixed
      */
-    public function getValue();
+    public function getValue(): mixed;
 }

@@ -19,6 +19,7 @@ use League\OAuth2\Server\EventEmitting\EmitterAwarePolyfill;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\GrantTypeInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\ClaimRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequestInterface;
@@ -66,7 +67,8 @@ class AuthorizationServer implements EmitterAwareInterface
         CryptKeyInterface|string $privateKey,
         #[SensitiveParameter]
         Key|string $encryptionKey,
-        ResponseTypeInterface|null $responseType = null
+        ResponseTypeInterface|null $responseType = null,
+        private ClaimRepositoryInterface|null $claimRepository = null
     ) {
         if ($privateKey instanceof CryptKeyInterface === false) {
             $privateKey = new CryptKey($privateKey);
@@ -96,6 +98,7 @@ class AuthorizationServer implements EmitterAwareInterface
         $grantType->setAccessTokenRepository($this->accessTokenRepository);
         $grantType->setClientRepository($this->clientRepository);
         $grantType->setScopeRepository($this->scopeRepository);
+        $grantType->setClaimRepository($this->claimRepository);
         $grantType->setDefaultScope($this->defaultScope);
         $grantType->setPrivateKey($this->privateKey);
         $grantType->setEmitter($this->getEmitter());

@@ -10,6 +10,7 @@ use League\OAuth2\Server\CryptKeyInterface;
 use League\OAuth2\Server\EventEmitting\EventEmitter;
 use League\OAuth2\Server\Grant\GrantTypeInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\ClaimRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
@@ -127,6 +128,10 @@ final class GrantType implements GrantTypeInterface
     }
 
     public function setIncludeVerificationUriComplete(bool $includeVerificationUriComplete): void
+    {
+    }
+
+    public function setClaimRepository(?ClaimRepositoryInterface $claimRepository): void
     {
     }
 }
