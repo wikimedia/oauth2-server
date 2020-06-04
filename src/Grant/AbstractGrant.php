@@ -106,11 +106,11 @@ abstract class AbstractGrant implements GrantTypeInterface
     }
 
     public function setRefreshTokenRepository(RefreshTokenRepositoryInterface $refreshTokenRepository): void
-        {
+    {
         $this->refreshTokenRepository = $refreshTokenRepository;
     }
 
-    public function setClaimRepository(ClaimRepositoryInterface $claimRepository): void
+    public function setClaimRepository(?ClaimRepositoryInterface $claimRepository): void
     {
         $this->claimRepository = $claimRepository;
     }
