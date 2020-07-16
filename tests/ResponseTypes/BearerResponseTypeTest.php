@@ -74,7 +74,9 @@ class BearerResponseTypeTest extends TestCase
         self::assertObjectHasProperty('access_token', $json);
         self::assertObjectHasProperty('refresh_token', $json);
         // Extract payload from access token
-        $payload = json_decode(base64_decode(explode('.', $json->access_token)[1], true));
+        $payloadString = base64_decode(explode('.', $json->access_token)[1], true);
+        self::assertIsNotBool($payloadString);
+        $payload = json_decode($payloadString);
         self::assertObjectHasProperty('_private', $payload);
         self::assertIsArray($payload->_private);
         self::assertCount(1, $payload->_private);
