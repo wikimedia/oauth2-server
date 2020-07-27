@@ -136,9 +136,10 @@ class AuthCodeGrant extends AbstractAuthorizeGrant
         if (isset($authCodePayload->code_challenge)) {
             $this->validateCodeChallenge($authCodePayload, $codeVerifier);
         }
+
         $privateClaims = [];
 
-        if ($this->claimRepository) {
+        if ($this->claimRepository !== null) {
             $privateClaims = $this->claimRepository->getClaims(
                 $this->getIdentifier(),
                 $client,
