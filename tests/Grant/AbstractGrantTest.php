@@ -360,7 +360,8 @@ class AbstractGrantTest extends TestCase
             new DateInterval('PT1H'),
             new ClientEntity(),
             123,
-            [new ScopeEntity()]
+            [new ScopeEntity()],
+            []
         );
         $this->assertInstanceOf(AccessTokenEntityInterface::class, $accessToken);
     }
