@@ -19,7 +19,9 @@ use LeagueTests\Stubs\RefreshTokenEntity;
 use LeagueTests\Stubs\ScopeEntity;
 use PHPUnit\Framework\TestCase;
 
+use function base64_decode;
 use function base64_encode;
+use function explode;
 use function json_decode;
 use function random_bytes;
 use function sprintf;
@@ -45,6 +47,7 @@ class BearerResponseTypeTest extends TestCase
         $accessToken->addScope($scope);
         $accessToken->setPrivateKey(new CryptKey('file://' . __DIR__ . '/../Stubs/private.key'));
         $accessToken->setUserIdentifier('userId');
+        $accessToken->setIssuer('test.com');
 
         $refreshToken = new RefreshTokenEntity();
         $refreshToken->setIdentifier('abcdef');
@@ -67,6 +70,15 @@ class BearerResponseTypeTest extends TestCase
         self::assertObjectHasProperty('expires_in', $json);
         self::assertObjectHasProperty('access_token', $json);
         self::assertObjectHasProperty('refresh_token', $json);
+        // Extract payload from access token
+        $payloadString = base64_decode(explode('.', $json->access_token)[1], true);
+        self::assertIsNotBool($payloadString);
+        $payload = json_decode($payloadString);
+        self::assertObjectHasProperty('_private', $payload);
+        self::assertIsArray($payload->_private);
+        self::assertCount(1, $payload->_private);
+        self::assertEquals(42, $payload->_private[0]);
+        self::assertEquals('test.com', $payload->iss);
     }
 
     public function testGenerateHttpResponseWithExtraParams(): void

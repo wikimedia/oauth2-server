@@ -64,13 +64,21 @@ trait AccessTokenTrait
     {
         $this->initJwtConfiguration();
 
-        return $this->jwtConfiguration->builder()
+        $builder = $this->jwtConfiguration->builder()
             ->permittedFor($this->getClient()->getIdentifier())
             ->identifiedBy($this->getIdentifier())
             ->issuedAt(new DateTimeImmutable())
             ->canOnlyBeUsedAfter(new DateTimeImmutable())
             ->expiresAt($this->getExpiryDateTime())
-            ->relatedTo($this->getSubjectIdentifier())
+            ->relatedTo($this->getSubjectIdentifier());
+
+        if (is_string($this->getIssuer())) {
+            /* @phpstan-ignore-next-line */
+            $builder->issuedBy($this->getIssuer());
+        }
+
+        return $builder
+            // Set scope claim late to prevent it from being overridden.
             ->withClaim('scopes', $this->getScopes())
             ->getToken($this->jwtConfiguration->signer(), $this->jwtConfiguration->signingKey());
     }
@@ -109,4 +117,6 @@ trait AccessTokenTrait
     {
         return $this->getUserIdentifier() ?? $this->getClient()->getIdentifier();
     }
+
+    abstract public function getIssuer(): ?string;
 }
