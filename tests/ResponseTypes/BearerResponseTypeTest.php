@@ -42,6 +42,7 @@ class BearerResponseTypeTest extends TestCase
         $accessToken->addScope($scope);
         $accessToken->addClaim($claim);
         $accessToken->setPrivateKey(new CryptKey('file://' . __DIR__ . '/../Stubs/private.key'));
+        $accessToken->setIssuer('test.com');
 
         $refreshToken = new RefreshTokenEntity();
         $refreshToken->setIdentifier('abcdef');
@@ -73,6 +74,7 @@ class BearerResponseTypeTest extends TestCase
         $this->assertIsArray($payload->_private);
         $this->assertCount(1, $payload->_private);
         $this->assertEquals(42, $payload->_private[0]);
+        $this->assertEquals('test.com', $payload->iss);
     }
 
     public function testGenerateHttpResponseWithExtraParams()
