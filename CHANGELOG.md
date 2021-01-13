@@ -7,7 +7,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 - Added support for setting `iss` issuer claim on access token JWT.
 ### Fixed
+- The server will now only recognise and handle an authorization header if the value of the header is non-empty. This is to circumvent issues where some common frameworks set this header even if no value is present (PR #1170)
+
+## [8.2.4] - released 2020-12-10
+### Fixed
+- Reverted the enforcement of at least one redirect_uri for a client. This change has instead been moved to version 9 (PR #1169)
+
+## [8.2.3] - released 2020-12-02
+### Added
+- Re-added support for PHP 7.2 (PR #1165, #1167)
+
+## [8.2.2] - released 2020-11-30
+### Fixed
+- Fix issue where the private key passphrase isn't correctly passed to JWT library (PR #1164)
+
+## [8.2.1] - released 2020-11-26
+### Fixed
+- If you have a password on your private key, it is now passed correctly to the JWT configuration object. (PR #1159)
+
+## [8.2.0] - released 2020-11-25
+### Added
+- Add a `getRedirectUri` function to the `OAuthServerException` class (PR #1123)
+- Support for PHP 8.0 (PR #1146)
+
+### Removed
+- Removed support for PHP 7.2 (PR #1146)
+
+### Fixed
 - Fix typo in parameter hint. `code_challenged` changed to `code_challenge`. Thrown by Auth Code Grant when the code challenge does not match the regex. (PR #1130) 
+- Undefined offset was returned when no client redirect URI was set. Now throw an invalidClient exception if no redirect URI is set against a client (PR #1140)
 
 ## [8.1.1] - released 2020-07-01
 
@@ -502,7 +530,12 @@ Version 5 is a complete code rewrite.
 
 - First major release
 
-[Unreleased]: https://github.com/thephpleague/oauth2-server/compare/8.1.1...HEAD
+[Unreleased]: https://github.com/thephpleague/oauth2-server/compare/8.2.4...HEAD
+[8.2.4]: https://github.com/thephpleague/oauth2-server/compare/8.2.3...8.2.4
+[8.2.3]: https://github.com/thephpleague/oauth2-server/compare/8.2.2...8.2.3
+[8.2.2]: https://github.com/thephpleague/oauth2-server/compare/8.2.1...8.2.2
+[8.2.1]: https://github.com/thephpleague/oauth2-server/compare/8.2.0...8.2.1
+[8.2.0]: https://github.com/thephpleague/oauth2-server/compare/8.1.1...8.2.0
 [8.1.1]: https://github.com/thephpleague/oauth2-server/compare/8.1.0...8.1.1
 [8.1.0]: https://github.com/thephpleague/oauth2-server/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/thephpleague/oauth2-server/compare/7.4.0...8.0.0
