@@ -295,7 +295,7 @@ class BearerResponseTypeTest extends TestCase
             $authorizationValidator->validateAuthorization($request);
         } catch (OAuthServerException $e) {
             $this->assertEquals(
-                'Error while decoding to JSON',
+                'Error while decoding from JSON',
                 $e->getHint()
             );
         }
