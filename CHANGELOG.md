@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 - Added support for setting `iss` issuer claim on access token JWT.
 
+## [8.3.4] - released 2022-04-07
+### Fixed
+- Server previously rejected valid uris with custom schemes. Now use league/uri for parsing to accept all valid uris (PR #1274)
+
 ## [8.3.3] - released 2021-10-11
 ### Security
 - Removed the use of `LocalFileReference()` in lcobucci/jwt. Function deprecated as per [GHSA-7322-jrq4-x5hf](https://github.com/lcobucci/jwt/security/advisories/GHSA-7322-jrq4-x5hf) (PR #1249)
@@ -557,7 +561,8 @@ Version 5 is a complete code rewrite.
 
 - First major release
 
-[Unreleased]: https://github.com/thephpleague/oauth2-server/compare/8.3.3...HEAD
+[Unreleased]: https://github.com/thephpleague/oauth2-server/compare/8.3.4...HEAD
+[8.3.4]: https://github.com/thephpleague/oauth2-server/compare/8.3.3...8.3.4
 [8.3.3]: https://github.com/thephpleague/oauth2-server/compare/8.3.2...8.3.3
 [8.3.2]: https://github.com/thephpleague/oauth2-server/compare/8.3.1...8.3.2
 [8.3.1]: https://github.com/thephpleague/oauth2-server/compare/8.3.0...8.3.1
