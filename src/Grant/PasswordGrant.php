@@ -58,8 +58,20 @@ class PasswordGrant extends AbstractGrant
         // Finalize the requested scopes
         $finalizedScopes = $this->scopeRepository->finalizeScopes($scopes, $this->getIdentifier(), $client, $user->getIdentifier());
 
+        $privateClaims = [];
+
+        if ($this->claimRepository !== null) {
+            $privateClaims = $this->claimRepository->getClaims($this->getIdentifier(), $client, $user->getIdentifier());
+        }
+
         // Issue and persist new access token
-        $accessToken = $this->issueAccessToken($accessTokenTTL, $client, $user->getIdentifier(), $finalizedScopes);
+        $accessToken = $this->issueAccessToken(
+            $accessTokenTTL,
+            $client,
+            $user->getIdentifier(),
+            $finalizedScopes,
+            $privateClaims
+        );
         $this->getEmitter()->emit(new RequestAccessTokenEvent(RequestEvent::ACCESS_TOKEN_ISSUED, $request, $accessToken));
         $responseType->setAccessToken($accessToken);
 
