@@ -34,7 +34,7 @@ $app = new App([
         // Init our repositories
         $clientRepository = new ClientRepository();
         $scopeRepository = new ScopeRepository();
-        $accessTokenRepository = new AccessTokenRepository();
+        $accessTokenRepository = new AccessTokenRepository('thephpleague.com');
         $authCodeRepository = new AuthCodeRepository();
         $refreshTokenRepository = new RefreshTokenRepository();
 

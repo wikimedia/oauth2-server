@@ -20,6 +20,13 @@ use OAuth2ServerExamples\Entities\AccessTokenEntity;
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     /**
+     * @param string $issuer token issuer identifier
+     */
+    public function __construct(private readonly string $issuer)
+    {
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
@@ -67,6 +74,8 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         if ($userIdentifier !== null) {
             $accessToken->setUserIdentifier((string) $userIdentifier);
         }
+
+        $accessToken->setIssuer($this->issuer);
 
         return $accessToken;
     }

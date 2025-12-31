@@ -66,7 +66,9 @@ trait AccessTokenTrait
         $this->initJwtConfiguration();
 
         $builder = $this->jwtConfiguration->builder();
-        $builder->permittedFor($this->getClient()->getIdentifier())
+        $builder->permittedFor($this->getClient()->getIdentifier());
+        $builder = $this->jwtConfiguration->builder()
+            ->permittedFor($this->getClient()->getIdentifier())
             ->identifiedBy($this->getIdentifier())
             ->issuedAt(new DateTimeImmutable())
             ->canOnlyBeUsedAfter(new DateTimeImmutable())
@@ -76,6 +78,10 @@ trait AccessTokenTrait
         foreach ($this->getClaims() as $claim) {
             /* @phpstan-ignore-next-line */
             $builder->withClaim($claim->getName(), $claim->getValue());
+        }
+        if (is_string($this->getIssuer())) {
+            /* @phpstan-ignore-next-line */
+            $builder->issuedBy($this->getIssuer());
         }
 
         return $builder
@@ -123,4 +129,6 @@ trait AccessTokenTrait
     {
         return $this->getUserIdentifier() ?? $this->getClient()->getIdentifier();
     }
+
+    abstract public function getIssuer(): ?string;
 }
