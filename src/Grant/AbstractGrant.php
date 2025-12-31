@@ -52,6 +52,7 @@ use function base64_decode;
 use function bin2hex;
 use function explode;
 use function is_string;
+use function method_exists;
 use function random_bytes;
 use function substr;
 use function trim;
@@ -76,7 +77,7 @@ abstract class AbstractGrant implements GrantTypeInterface
 
     protected AuthCodeRepositoryInterface $authCodeRepository;
 
-    protected ClaimRepositoryInterface $claimRepository;
+    protected ?ClaimRepositoryInterface $claimRepository;
 
     protected RefreshTokenRepositoryInterface $refreshTokenRepository;
 
@@ -437,7 +438,7 @@ abstract class AbstractGrant implements GrantTypeInterface
         $accessToken->setExpiryDateTime((new DateTimeImmutable())->add($accessTokenTTL));
         $accessToken->setPrivateKey($this->privateKey);
 
-        if (\method_exists($accessToken, 'addClaim')) {
+        if (method_exists($accessToken, 'addClaim')) {
             foreach ($claims as $claim) {
                 $accessToken->addClaim($claim);
             }

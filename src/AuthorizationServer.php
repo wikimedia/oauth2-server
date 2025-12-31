@@ -68,7 +68,7 @@ class AuthorizationServer implements EmitterAwareInterface
         #[SensitiveParameter]
         Key|string $encryptionKey,
         ResponseTypeInterface|null $responseType = null,
-        private ClaimRepositoryInterface $claimRepository = null
+        private ClaimRepositoryInterface|null $claimRepository = null
     ) {
         if ($privateKey instanceof CryptKeyInterface === false) {
             $privateKey = new CryptKey($privateKey);

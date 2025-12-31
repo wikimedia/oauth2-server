@@ -1,0 +1,3 @@
+parameters:
+  ignoreErrors:
+    - '#\[BC\] ADDED: Method setClaimRepository\(\) was added to interface #'

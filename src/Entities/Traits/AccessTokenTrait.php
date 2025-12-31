@@ -18,7 +18,6 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Token;
 use League\OAuth2\Server\CryptKeyInterface;
-use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Entities\ClaimEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
@@ -75,6 +74,7 @@ trait AccessTokenTrait
             ->relatedTo($this->getSubjectIdentifier());
 
         foreach ($this->getClaims() as $claim) {
+            /* @phpstan-ignore-next-line */
             $builder->withClaim($claim->getName(), $claim->getValue());
         }
 

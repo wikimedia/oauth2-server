@@ -368,7 +368,7 @@ class ImplicitGrantTest extends TestCase
         $claimRepositoryMock = $this->getMockBuilder(ClaimRepositoryInterface::class)->getMock();
         $claimRepositoryMock->method('getClaims')->willReturn([]);
 
-        $grant = new ImplicitGrant(new \DateInterval('PT10M'));
+        $grant = new ImplicitGrant(new DateInterval('PT10M'));
         $grant->setPrivateKey(new CryptKey('file://' . __DIR__ . '/../Stubs/private.key'));
         $grant->setAccessTokenRepository($accessTokenRepositoryMock);
         $grant->setScopeRepository($scopeRepositoryMock);
