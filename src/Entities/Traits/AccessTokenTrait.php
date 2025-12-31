@@ -18,6 +18,7 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Token;
 use League\OAuth2\Server\CryptKeyInterface;
+use League\OAuth2\Server\Entities\ClaimEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use RuntimeException;
@@ -64,13 +65,27 @@ trait AccessTokenTrait
     {
         $this->initJwtConfiguration();
 
-        return $this->jwtConfiguration->builder()
+        $builder = $this->jwtConfiguration->builder();
+        $builder->permittedFor($this->getClient()->getIdentifier());
+        $builder = $this->jwtConfiguration->builder()
             ->permittedFor($this->getClient()->getIdentifier())
             ->identifiedBy($this->getIdentifier())
             ->issuedAt(new DateTimeImmutable())
             ->canOnlyBeUsedAfter(new DateTimeImmutable())
             ->expiresAt($this->getExpiryDateTime())
-            ->relatedTo($this->getSubjectIdentifier())
+            ->relatedTo($this->getSubjectIdentifier());
+
+        foreach ($this->getClaims() as $claim) {
+            /* @phpstan-ignore-next-line */
+            $builder->withClaim($claim->getName(), $claim->getValue());
+        }
+        if (is_string($this->getIssuer())) {
+            /* @phpstan-ignore-next-line */
+            $builder->issuedBy($this->getIssuer());
+        }
+
+        return $builder
+            // Set scope claim late to prevent it from being overridden.
             ->withClaim('scopes', $this->getScopes())
             ->getToken($this->jwtConfiguration->signer(), $this->jwtConfiguration->signingKey());
     }
@@ -98,6 +113,11 @@ trait AccessTokenTrait
     abstract public function getScopes(): array;
 
     /**
+     * @return ClaimEntityInterface[]
+     */
+    abstract public function getClaims(): array;
+
+    /**
      * @return non-empty-string
      */
     abstract public function getIdentifier(): string;
@@ -109,4 +129,6 @@ trait AccessTokenTrait
     {
         return $this->getUserIdentifier() ?? $this->getClient()->getIdentifier();
     }
+
+    abstract public function getIssuer(): ?string;
 }

@@ -23,6 +23,7 @@ use League\OAuth2\Server\CryptKeyInterface;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
+use League\OAuth2\Server\Entities\ClaimEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
@@ -32,6 +33,7 @@ use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationExcep
 use League\OAuth2\Server\RedirectUriValidators\RedirectUriValidator;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
+use League\OAuth2\Server\Repositories\ClaimRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -50,6 +52,7 @@ use function base64_decode;
 use function bin2hex;
 use function explode;
 use function is_string;
+use function method_exists;
 use function random_bytes;
 use function substr;
 use function trim;
@@ -73,6 +76,8 @@ abstract class AbstractGrant implements GrantTypeInterface
     protected ScopeRepositoryInterface $scopeRepository;
 
     protected AuthCodeRepositoryInterface $authCodeRepository;
+
+    protected ?ClaimRepositoryInterface $claimRepository;
 
     protected RefreshTokenRepositoryInterface $refreshTokenRepository;
 
@@ -104,6 +109,11 @@ abstract class AbstractGrant implements GrantTypeInterface
     public function setRefreshTokenRepository(RefreshTokenRepositoryInterface $refreshTokenRepository): void
     {
         $this->refreshTokenRepository = $refreshTokenRepository;
+    }
+
+    public function setClaimRepository(?ClaimRepositoryInterface $claimRepository): void
+    {
+        $this->claimRepository = $claimRepository;
     }
 
     public function setAuthCodeRepository(AuthCodeRepositoryInterface $authCodeRepository): void
@@ -410,6 +420,7 @@ abstract class AbstractGrant implements GrantTypeInterface
      * Issue an access token.
      *
      * @param ScopeEntityInterface[] $scopes
+     * @param ClaimEntityInterface[] $claims
      *
      * @throws OAuthServerException
      * @throws UniqueTokenIdentifierConstraintViolationException
@@ -418,13 +429,20 @@ abstract class AbstractGrant implements GrantTypeInterface
         DateInterval $accessTokenTTL,
         ClientEntityInterface $client,
         string|null $userIdentifier,
-        array $scopes = []
+        array $scopes = [],
+        array $claims = []
     ): AccessTokenEntityInterface {
         $maxGenerationAttempts = self::MAX_RANDOM_TOKEN_GENERATION_ATTEMPTS;
 
         $accessToken = $this->accessTokenRepository->getNewToken($client, $scopes, $userIdentifier);
         $accessToken->setExpiryDateTime((new DateTimeImmutable())->add($accessTokenTTL));
         $accessToken->setPrivateKey($this->privateKey);
+
+        if (method_exists($accessToken, 'addClaim')) {
+            foreach ($claims as $claim) {
+                $accessToken->addClaim($claim);
+            }
+        }
 
         while ($maxGenerationAttempts-- > 0) {
             $accessToken->setIdentifier($this->generateUniqueIdentifier());

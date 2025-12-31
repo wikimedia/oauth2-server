@@ -20,6 +20,13 @@ use OAuth2ServerExamples\Entities\AccessTokenEntity;
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     /**
+     * @param string $issuer token issuer identifier
+     */
+    public function __construct(private readonly string $issuer)
+    {
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
@@ -46,11 +53,19 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
-    {
+    public function getNewToken(
+        ClientEntityInterface $clientEntity,
+        array $scopes,
+        string|null $userIdentifier = null,
+        array $claims = []
+    ): AccessTokenEntityInterface {
         $accessToken = new AccessTokenEntity();
 
         $accessToken->setClient($clientEntity);
+
+        foreach ($claims as $claim) {
+            $accessToken->addClaim($claim);
+        }
 
         foreach ($scopes as $scope) {
             $accessToken->addScope($scope);
@@ -59,6 +74,8 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         if ($userIdentifier !== null) {
             $accessToken->setUserIdentifier((string) $userIdentifier);
         }
+
+        $accessToken->setIssuer($this->issuer);
 
         return $accessToken;
     }
