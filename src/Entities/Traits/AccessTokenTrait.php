@@ -74,7 +74,7 @@ trait AccessTokenTrait
 
         if (is_string($this->getIssuer())) {
             /* @phpstan-ignore-next-line */
-            $builder->issuedBy($this->getIssuer());
+            $builder = $builder->issuedBy($this->getIssuer());
         }
 
         return $builder
