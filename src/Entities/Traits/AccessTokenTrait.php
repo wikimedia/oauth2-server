@@ -75,7 +75,7 @@ trait AccessTokenTrait
 
         foreach ($this->getClaims() as $claim) {
             /* @phpstan-ignore-next-line */
-            $builder->withClaim($claim->getName(), $claim->getValue());
+            $builder = $builder->withClaim($claim->getName(), $claim->getValue());
         }
 
         return $builder
